@@ -1,0 +1,244 @@
+{
+  "questions": [
+    {
+      "question": "What does TCP stand for?",
+      "options": [
+        "Transmission Control Protocol",
+        "TCP/IP",
+        "Internet Transfer Packet",
+        "Total Communication Process"
+      ],
+      "correct_index": 0,
+      "correct_answer": "Transmission Control Protocol",
+      "evidence": "Transmission Control Protocol (TCP) is a communications standard that enables application programs and computing devices to exchange messages over a network."
+    },
+    {
+      "question": "What does TCP stand for in networking?",
+      "options": [
+        "Total Connection Permanence",
+        "Technical Computing Processor",
+        "Terrible Communication Problems",
+        "Transmission Control Protocol"
+      ],
+      "correct_index": 3,
+      "correct_answer": "Transmission Control Protocol",
+      "evidence": "Transmission Control Protocol (TCP) is a communications standard that enables application programs and computing devices to exchange messages over a network."
+    },
+    {
+      "question": "What does IP stand for in networking?",
+      "options": [
+        "Intrusive Packet System",
+        "Internet Protocol",
+        "Intermediate Processing Unit",
+        "Intelligent Programming"
+      ],
+      "correct_index": 1,
+      "correct_answer": "Internet Protocol",
+      "evidence": "The Internet Protocol (IP) is the method for sending data from one device to another across the internet."
+    },
+    {
+      "question": "What does TCP/IP stand for?",
+      "options": [
+        "Terrible Connection Interruption Problems",
+        "Transmission Control Program",
+        "Total Communication Interface Protocol",
+        "TCP/IP"
+      ],
+      "correct_index": 3,
+      "correct_answer": "TCP/IP",
+      "evidence": "The TCP/IP model is the default method of data communication on the Internet."
+    },
+    {
+      "question": "What are some common protocols that use TCP?",
+      "options": [
+        "SSH",
+        "Telnet",
+        "FTP",
+        "SMTP"
+      ],
+      "correct_index": 3,
+      "correct_answer": "SMTP",
+      "evidence": "As a result, high-level protocols that need to transmit data all use TCP Protocol. Examples include peer-to-peer sharing methods like File Transfer Protocol (FTP), Secure Shell (SSH), and Telnet."
+    },
+    {
+      "question": "What is the main purpose of IP in networking?",
+      "options": [
+        "Providing security for transmitted data",
+        "Defining address information within data packets",
+        "Establishing a connection between source and destination devices",
+        "Ensuring end-to-end delivery integrity"
+      ],
+      "correct_index": 1,
+      "correct_answer": "Defining address information within data packets",
+      "evidence": "IP is responsible for defining how applications and devices exchange packets of data with each other. It does this through the Internet Protocol Suite (TCP/IP), a group of communications protocols that are split into four abstraction layers."
+    },
+    {
+      "question": "What does IP stand for?",
+      "options": [
+        "Internet Protocol",
+        "Interconnected Pathways",
+        "Information Processing",
+        "Intrusion Prevention Policy"
+      ],
+      "correct_index": 0,
+      "correct_answer": "Internet Protocol",
+      "evidence": "The Internet Protocol (IP) is the method for sending data from one device to another across the internet."
+    },
+    {
+      "question": "What protocols are used in digital network communications?",
+      "options": [
+        "FTP, SSH and Telnet",
+        "SSH, IMAP and SMTP",
+        "SMTP, POP3 and SSL",
+        "HTTP, FTP and HTTPS"
+      ],
+      "correct_index": 2,
+      "correct_answer": "SMTP, POP3 and SSL",
+      "evidence": "Examples include peer-to-peer sharing methods like File Transfer Protocol (FTP), Secure Shell (SSH), and Telnet. It is also used to send and receive email through the Internet Message Access Protocol (IMAP), Post Office Protocol (POP), and Simple Mail Transfer Protocol (SMTP)."
+    },
+    {
+      "question": "What protocols are alternatives for TCP?",
+      "options": [
+        "SSH, IMAP",
+        "HTTPS, FTP",
+        "UDP, SSH",
+        "TCP/IP"
+      ],
+      "correct_index": 2,
+      "correct_answer": "UDP, SSH",
+      "evidence": "As an alternative to TCP in networking is the User Datagram Protocol (UDP), which is used to establish low-latency connections between applications and decrease transmissions time."
+    },
+    {
+      "question": "What are some examples of protocols that use UDP?",
+      "options": [
+        "SSH, IMAP",
+        "TCP/IP",
+        "UDP, SSH",
+        "HTTPS, FTP"
+      ],
+      "correct_index": 2,
+      "correct_answer": "UDP, SSH",
+      "evidence": "As an alternative to TCP in networking is the User Datagram Protocol (UDP), which is used to establish low-latency connections between applications and decrease transmissions time."
+    },
+    {
+      "question": "What does a datalink layer do in the TCP/IP Model?",
+      "options": [
+        "Handles the physical act of sending and receiving data",
+        "Handles physical act of sending and receiving data",
+        "Determines packet sequence for transmission over networks",
+        "Defines how to send and receive packets between applications or devices"
+      ],
+      "correct_index": 0,
+      "correct_answer": "Handles the physical act of sending and receiving data",
+      "evidence": "The datalink layer defines how data should be sent, handles the physical act of sending and receiving data."
+    },
+    {
+      "question": "What is a three-way handshake in TCP?",
+      "options": [
+        "A method to establish a connection between devices",
+        "Three packets exchanged before communication begins",
+        "A method to establish connection between devices",
+        "Process for reassembling dropped packets"
+      ],
+      "correct_index": 0,
+      "correct_answer": "A method to establish a connection between devices",
+      "evidence": "As a connection based protocol, the TCP uses three-way handshake to establish a connection."
+    },
+    {
+      "question": "What protocols are used for email transmission?",
+      "options": [
+        "SSH",
+        "SMTP",
+        "IMAP",
+        "FTP"
+      ],
+      "correct_index": 1,
+      "correct_answer": "SMTP",
+      "evidence": "It is also used to send and receive email through the Internet Message Access Protocol (IMAP), Post Office Protocol (POP), and Simple Mail Transfer Protocol (SMTP)."
+    },
+    {
+      "question": "What protocols are alternatives for TCP?",
+      "options": [
+        "SSH",
+        "TLS",
+        "FTP",
+        "UDP"
+      ],
+      "correct_index": 3,
+      "correct_answer": "UDP",
+      "evidence": "An alternative to TCP in networking is the User Datagram Protocol (UDP), which is used to establish low-latency connections between applications and decrease transmissions time."
+    },
+    {
+      "question": "What does a datalink layer do in the TCP/IP Model?",
+      "options": [
+        "Manages flow control, ensuring all packets reach their destination.",
+        "Determines packet sequencing before sending data.",
+        "Handles physical act of transmitting and receiving data",
+        "Defines how to send and receive packets between applications or devices."
+      ],
+      "correct_index": 3,
+      "correct_answer": "Defines how to send and receive packets between applications or devices.",
+      "evidence": "The datalink layer defines how data should be sent, handles the physical act of sending and receiving data, and is responsible for transmitting data between applications or devices on a network."
+    },
+    {
+      "question": "What does TCP/IP use to establish connections?",
+      "options": [
+        "One-time agreement",
+        "Four-step process",
+        "Two-part exchange",
+        "Three-way handshake"
+      ],
+      "correct_index": 3,
+      "correct_answer": "Three-way handshake",
+      "evidence": "TCP/IP uses a three-way handshake to establish a connection between a device and a server."
+    },
+    {
+      "question": "What does TCP guarantee during data transmission?",
+      "options": [
+        "Speed of delivery",
+        "Low-latency connections",
+        "Data integrity",
+        "Packet sequencing"
+      ],
+      "correct_index": 2,
+      "correct_answer": "Data integrity",
+      "evidence": "TCP guarantees the integrity of the data being communicated over a network."
+    },
+    {
+      "question": "What is an alternative to TCP in networking?",
+      "options": [
+        "Transmission Data Packet (TDP)",
+        "Total Communication Process",
+        "Internet Control Program (ICP)",
+        "User Datagram Protocol (UDP)"
+      ],
+      "correct_index": 3,
+      "correct_answer": "User Datagram Protocol (UDP)",
+      "evidence": "As an alternative to TCP in networking is the User Datagram Protocol (UDP), which is used to establish low-latency connections between applications and decrease transmissions time."
+    },
+    {
+      "question": "What does IP address uniquely identify?",
+      "options": [
+        "The entire world's population",
+        "A specific website",
+        "An individual computer or smartphone on a network",
+        "All devices connected to the Internet"
+      ],
+      "correct_index": 2,
+      "correct_answer": "An individual computer or smartphone on a network",
+      "evidence": "Every device has an IP address that uniquely identifies it and enables it to communicate with other devices connected to the internet."
+    },
+    {
+      "question": "What protocols are used in digital network communications?",
+      "options": [
+        "SSH, IMAP and SMTP",
+        "FTP, SSH and Telnet",
+        "TCP/IP",
+        "HTTP, FTP and HTTPS"
+      ],
+      "correct_index": 2,
+      "correct_answer": "TCP/IP",
+      "evidence": "As a result, high-level protocols that need to transmit data all use TCP Protocol. Examples include peer-to-peer sharing methods like File Transfer Protocol (FTP), Secure Shell (SSH), and Telnet."
+    }
+  ]
+}

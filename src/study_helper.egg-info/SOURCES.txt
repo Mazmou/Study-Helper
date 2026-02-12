@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/study_helper/__init__.py
+src/study_helper/main.py
+src/study_helper/step1_ollama_smoke.py
+src/study_helper.egg-info/PKG-INFO
+src/study_helper.egg-info/SOURCES.txt
+src/study_helper.egg-info/dependency_links.txt
+src/study_helper.egg-info/top_level.txt
+tests/test_smoke.py

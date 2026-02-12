@@ -1,0 +1,77 @@
+{
+    "questions": [
+        {
+            "question": "What does TCP stand for in networking?",
+            "options": ["Transmission Control Protocol","Terrestrial Communication Processor","Total Connection Ping","Technical Computational Programming"],
+            "correct_index": 0,
+            "correct_answer": "Transmission Control Protocol"
+        ,
+        "evidence": "Transmission Control Protocol (TCP) is a communications standard that enables application programs and computing devices to exchange messages over a network."
+    },
+       {
+            "question": "What does TCP ensure during data transmission?",
+            "options": ["Data integrity","Packet size uniformity","Connection reliability","Network speed optimization"],
+            "correct_index": 2,
+            "correct_answer": "Connection reliability"
+        ,
+        "evidence": "TCP organizes data so that it can be transmitted between a server and a client. It guarantees the integrity of the data being communicated over a network."
+    },
+       {
+            "question": "What is an alternative to TCP in networking?",
+            "options": ["User Datagram Protocol (UDP)","Universal Data Transmission Processor","Unified Communication and Presentation Protocol","Underlying Network Deployment Platform"],
+            "correct_index": 0,
+            "correct_answer": "User Datagram Protocol (UDP)"
+        ,
+        "evidence": "An alternative to TCP in networking is the User Datagram Protocol (UDP), which is used to establish low-latency connections between applications and decrease transmissions time."
+    },
+       {
+            "question": "What does IP stand for?",
+            "options": ["Internet Provider","Intermediate Processor","Intrusion Prevention protocol","Information Packet"],
+            "correct_index": 0,
+            "correct_answer": "Internet Provider"
+        ,
+        "evidence": "The Internet Protocol (IP) is the method for sending data from one device to another across the internet."
+    },
+       {
+            "question": "What does IP address uniquely identify?",
+            "options": ["A specific website","An individual user's computer","Every networked device on a single network or several interconnected networks","The entire Internet"],
+            "correct_index": 2,
+            "correct_answer": "Every networked device on a single network or several interconnected networks"
+        ,
+        "evidence": "IP is responsible for defining how applications and devices exchange packets of data with each other. It uniquely identifies every device connected to the internet."
+    },
+       {
+            "question": "What are TCP/IP layers?",
+            "options": ["Physical hardware components","Network access layer, network interface layer or physical layer","Data encryption and security protocols","Application-specific data processing"],
+            "correct_index": 2,
+            "correct_answer": "Network access layer, network interface layer or physical layer"
+        ,
+        "evidence": "The TCP/IP model divides communication tasks into layers that keep the process standardized. The four layers of the TCP/IP are datalink layer (network access layer), internet layer, transport layer and application layer."
+    },
+       {
+            "question": "What is a three-way handshake in TCP?",
+            "options": ["A method for establishing secure connections","The process of transferring data packets from one device to another without errors or loss","An exchange between the source and destination devices before communication begins","All of the above"],
+            "correct_index": 3,
+            "correct_answer": "All of the above"
+        ,
+        "evidence": "A good example is when an email is sent using SMTP from an email server. To start this process, a three-way handshake between the device and server ensures synchronization before communication begins."
+    },
+       {
+            "question": "What does TCP/IP use to ensure data packets are private?",
+            "options": ["Virtual Private Network (VPN)","Firewall settings only","Public Wi-Fi networks for secure connections","Encryption protocols like SSL and TLS"],
+            "correct_index": 1,
+            "correct_answer": "Virtual Private Network (VPN)"
+        ,
+        "evidence": "Data packets sent over TCP/IP are not private. To encrypt data being shared through TCP/IP is a way to ensure its privacy."
+    },
+       {
+            "question": "What does the datalink layer in TCP/IP model do?",
+            "options": ["Defines how devices should transmit data","Handles physical act of sending and receiving packets between applications or devices on network. It also includes manag",
+                    "> Defines packet size uniformity across all networks.",
+                    "> Ensures that the original message format is reassembled correctly at destination."],
+            "correct_index": 0,
+            "correct_answer": "Defines how devices should transmit data and handles physical act of sending and receiving packets"
+        ,
+        "evidence": "The datalink layer defines the signaling by hardware on a network. It includes defining signals for transmission devices such as computer device drivers or wireless networks."
+    }
+] }

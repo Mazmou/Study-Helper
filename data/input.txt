@@ -1,0 +1,97 @@
+Technical
+Descriptions
+(Mechanism
+and Process)
+ENCS 282
+
+Technical Descriptions
+It is all about painting complex pictures with words
+ Focus and level relate to your purpose and the needs of the audience
+ Ask these questions
+ What is it?
+ What does it do?
+ What does it look like?
+ What is it made of?
+ How does it work?
+ How was it put together
+
+Technical Descriptions
+Give an impartial view
+ Avoid subjective impressions
+ Focus on observable details
+ “The table is a bad table” vs “The table is crooked and seems quite old. The
+wood is slightly destroyed in the middle and makes an odd sound. Apart from
+the fact that it is shaking a lot, one of the legs is broken.”
+
+ Use precise language
+ “An old model” vs “Honda Acura 2008 model”
+
+Mechanism Description
+ What is it?
+ What is its function? What does it look like?
+ What are its principal components?
+
+How to do Mechanism Description
+ Visual walkabout. Describe the object in the order of a single visual sweep.
+You could work from top to bottom or around the object without jumping.
+ System breakdown. Identify parts based on the relationships between
+those parts. This approach considers connections and interactions
+between components. (Note: This approach could be used to describe the
+conceptual layout of an application which passes information between
+various components in the system.)
+ Core-to-periphery. Identify the most important attributes before moving
+to less significant ones.
+
+Mechanism Description Notes
+ Dimensions: marked on the diagram and noted in the description
+ Shapes: described to help the reader locate and visualize
+components
+ Position: written precisely (example: “immediately to the right…”)
+ Colour and texture: described only if these are significant
+ Purpose and function: noted for the object or system as a whole
+and for individual components
+
+Visuals and Style
+ Visuals are an essential complement to any mechanism description.
+Therefore, you should actively refer to an appropriately labelled
+figure.
+ Style
+ Write short, focused paragraphs.
+ Use a direct, conversational tone, without colloquial language.
+
+Process Description
+• Where, when, why, and how does the process occur?
+• What is the environment in which the process takes place?
+• What are the principal stages of the process?
+• What are the applications of the process?
+
+Process: Introduction
+ Start with the “big picture,” naming and defining the process, and
+noting special features.
+ Describe where, when, why, and how the process occurs. • Provide
+essential background information.
+ List the main stages or actions of the process
+
+Process: Stages
+ Describe stages in detail and in chronological order.
+ Relate individual stages to those that precede and follow.
+ Provide applicable measurements of time, distance, direction,
+density, volume, etc
+
+Process: Conclusion
+ Make statements about the overall process, leading to practical
+considerations: time, cost, applications, problems and limitations,
+results
+
+Visuals and Style
+ Visuals are essential to any process description. Therefore, you
+should include and actively refer to an appropriately labelled figure.
+ Style
+ Write short, focused paragraphs.
+ Use precise, accurate vocabulary.
+ In general, use the indicative mood for process stages. (e.g., The next stage
+takes three hours…)
+ Choose active voice (e.g., “The signal travels…”) or passive voice (e.g., “The
+signal is next transferred to the filtering stage…”) to maintain cohesion and
+flow.
+
