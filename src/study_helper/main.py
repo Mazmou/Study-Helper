@@ -1,6 +1,6 @@
 from pathlib import Path
 import logging
-from .logging_config import setup_logging
+from .logging_config import setup_logging 
 from .step1 import initiate_QuizGen_batch, initiate_QuizGen
 from .render import render_quiz_terminal, render_quiz_markdown
 from .paths import DATA_DIR, PROJECT_ROOT

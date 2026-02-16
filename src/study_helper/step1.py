@@ -45,6 +45,22 @@ QUIZ_SCHEMA = {
 
 validator = Draft202012Validator(QUIZ_SCHEMA)
 
+def QuizValidationError(Exception):
+    """Base class for all quiz validation failures"""
+    pass
+
+class SchemaValidationError(QuizValidationError):
+    pass
+
+class EvidenceValidationError(QuizValidationError):
+    pass
+
+class AnswerValidationError(QuizValidationError):
+    pass
+
+class OptionValidationError(QuizValidationError):
+    pass
+
 
 def call_ollama(prompt: str, AIspecs: dict) -> str:
     payload = {
@@ -144,7 +160,7 @@ def validate_schema(parsed: dict) -> None:
                 else:
                     path += f".{p}"
             messages.append(f"{path}: {e.message}")
-        raise ValueError("Schema validation failed:\n" + "\n".join(messages)) 
+        raise SchemaValidationError("Schema validation failed:\n" + "\n".join(messages)) 
 
 def normalize_correct_index(q: dict, *, allow_one_based: bool = True) -> None:
     """
@@ -210,11 +226,11 @@ def validate_evidence(parsed, study_text):
         ans_raw = question.get("correct_answer","")
 
         if not evidence_raw or not evidence_raw.strip():
-            raise ValueError(f"Missing 'evidence' key in question {i}")
-        
+            raise EvidenceValidationError(f"Missing 'evidence' key in question {i}")
+
         word_count = len(evidence_raw.split())
         if word_count < 10 or word_count > 60:
-            raise ValueError(f"Evidence {i} must be 10 to 60 words (got {word_count})")
+            raise EvidenceValidationError(f"Evidence {i} must be 10 to 60 words (got {word_count})")
         
         ev_norm = normalize_text(evidence_raw)
         ans_norm = normalize_text(ans_raw)
@@ -226,7 +242,7 @@ def validate_evidence(parsed, study_text):
         ans_tokens = [t for t in ans_norm.split() if len(t) >= 3]
 
         if not ev_tokens:
-            raise ValueError(f"Evidence {i} has no meaningful tokens")
+            raise EvidenceValidationError(f"Evidence {i} has no meaningful tokens")
 
         hits = sum(1 for t in ev_tokens if t in study_norm)
         ratioToText = hits / len(ev_tokens)
@@ -235,11 +251,11 @@ def validate_evidence(parsed, study_text):
         ratioToAns = hits / len(ans_tokens)
 
         if ratioToText < overlap_threshold:
-            raise ValueError(
+            raise EvidenceValidationError(
                 f"Evidence {i} seems unrelated to the text (token overlap {ratioToText:.2f} < {overlap_threshold}). Evidence: {evidence_raw}"
             )
         if ratioToAns < 0.3:
-            raise ValueError(
+            raise EvidenceValidationError(
                 f"Evidence {i} seems unrelated to the answer (token overlap {ratioToAns:.2f} < 0.3). Evidence: {evidence_raw}"
             )
                 
@@ -250,10 +266,10 @@ def validate_answer(parsed: dict) -> None:
         ans_raw = q.get("correct_answer", "")
 
         if not isinstance(options_raw, list) or len(options_raw) != 4:
-            raise ValueError(f"Question {i} has invalid options: {options_raw!r}")
+            raise AnswerValidationError(f"Question {i} has invalid options: {options_raw!r}")
 
         if not isinstance(ans_raw, str) or not ans_raw.strip():
-            raise ValueError(f"Question {i} has invalid correct_answer: {ans_raw!r}")
+            raise AnswerValidationError(f"Question {i} has invalid correct_answer: {ans_raw!r}")
 
         ans_norm = normalize_text(ans_raw)
         options_norm = [normalize_text(o) for o in options_raw]
@@ -277,7 +293,7 @@ def validate_answer(parsed: dict) -> None:
         q["correct_answer"] = options_raw[match_idx]
 
         if q["options"][q["correct_index"]] != q["correct_answer"]:
-            raise ValueError(f"Answer alignment failed after repair in question {i}")
+            raise AnswerValidationError(f"Answer alignment failed after repair in question {i}")
 
         
 def shuffle_answer(question: dict) -> None:
@@ -287,7 +303,7 @@ def shuffle_answer(question: dict) -> None:
     random.shuffle(options)
 
     if correct_answer not in options:
-        raise ValueError("Correct answer disappeared after shuffle (duplicate/normalization issue)")
+        raise AnswerValidationError("Correct answer disappeared after shuffle (duplicate/normalization issue)")
 
     question["correct_index"] = options.index(correct_answer)
 
@@ -304,11 +320,11 @@ def validate_options(parsed):
 
     for i, q in enumerate(parsed["questions"]):
         if not allUnique(q["options"]):
-            raise ValueError(f"Options are not unique in question {i}")
+            raise OptionValidationError(f"Options are not unique in question {i}")
         
         for j, opt in enumerate(q.get("options", [])):
             if len(opt) > 120:
-                raise ValueError(f"Option too long (q{i} opt{j} len={len(opt)}): {opt!r}")
+                raise OptionValidationError(f"Option too long (q{i} opt{j} len={len(opt)}): {opt!r}")
     
 
 def allUnique(x):
@@ -347,16 +363,33 @@ def validate_question_quality(parsed: dict) -> None:
         # A) ban option patterns
         for o in options:
             if any(p in o for p in banned_option_phrases):
-                raise ValueError(f"Bad option pattern in question {i}: {o!r}")
+                raise OptionValidationError(f"Bad option pattern in question {i}: {o!r}")
 
         # B) ban concept-inversion question templates
         for pat in banned_question_patterns:
             if re.search(pat, qtext):
-                raise ValueError(f"Concept-inversion question in question {i}: {qtext!r}")
+                raise OptionValidationError(f"Concept-inversion question in question {i}: {qtext!r}")
 
         # C) ban multi-select questions (single-answer only MVP)
         if any(cue in qtext for cue in multi_select_cues):
-            raise ValueError(f"Multi-select style question in question {i}: {qtext!r}")
+            raise OptionValidationError(f"Multi-select style question in question {i}: {qtext!r}")
+
+def verificationQuiz(res: str, study_text: str):
+
+    parsed = normalize_quiz(json.loads(res))
+
+    if not parsed.get("questions"):
+        raise OptionValidationError("Model returned empty questions array")
+    
+    validate_schema(parsed)         
+    validate_evidence(parsed, study_text)
+    validate_answer(parsed)
+    validate_options(parsed)
+    validate_question_quality(parsed)
+
+    parsed = shuffle_quiz(parsed)
+
+    return parsed
 
 def generate_until_valid(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict):
     start = time.time()
@@ -376,21 +409,9 @@ def generate_until_valid(study_text: str, output_dir: Path, quizSpecs: dict, AIS
             continue
 
         try: 
-            parsed = normalize_quiz(json.loads(res))
 
-            if not parsed.get("questions"):
-                raise ValueError("Model returned empty questions array")
-            
-            validate_schema(parsed)         
-            validate_evidence(parsed, study_text)
-            validate_answer(parsed)
-            validate_options(parsed)
-            validate_question_quality(parsed)
+            return verificationQuiz(res, study_text)
 
-            parsed = shuffle_quiz(parsed)
-
-            return parsed
-        
         except  Exception as e:
             last_error = e
             
