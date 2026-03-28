@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 from pathlib import Path
 from .paths import PROJECT_ROOT, DATA_DIR
@@ -8,6 +9,11 @@ import requests
 import time
 import re
 import random
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING: 
+    from study_helper.engine import QuizEngine
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +51,7 @@ QUIZ_SCHEMA = {
 
 validator = Draft202012Validator(QUIZ_SCHEMA)
 
-def QuizValidationError(Exception):
+class QuizValidationError(Exception):
     """Base class for all quiz validation failures"""
     pass
 
@@ -198,18 +204,7 @@ def normalize_quiz(parsed: dict, *, allow_one_based: bool = True) -> dict:
 
     return parsed
 
-def normalize_quiz(parsed):
 
-    for i in range(len(parsed["questions"])):
-        index = parsed["questions"][i]["correct_index"]
-
-        if 1 <= index <= 4:
-            parsed["questions"][i]["correct_index"] -= 1
-        elif 0 <= index <= 3:
-            continue
-        else:
-            raise ValueError("Index value out of permitted range")
-    return parsed
 
 def normalize_text(s:str) -> str:
     s = s.replace("\r\n", "\n").lower()
@@ -391,40 +386,11 @@ def verificationQuiz(res: str, study_text: str):
 
     return parsed
 
-def generate_until_valid(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict):
-    start = time.time()
-    last_error = None
 
-    max_attempts = quizSpecs["maxAttempts"] if "maxAttempts" in quizSpecs else (logger.info("maxAttempts not found. Defaulting to 5.") or 5)
-    max_seconds = quizSpecs["maxSec"] if "maxSec" in quizSpecs else (logger.info("maxSec not found. Defaulting to 60.") or 60)
-    NUM_QUESTIONS = quizSpecs["numQues"] if "numQues" in quizSpecs else (logger.info("numQues not found. Defaulting to 5.") or 5)
+def initiate_QuizGen(study_text: str, engine: QuizEngine):
 
-    for attempt in range(1, max_attempts+1):
-        if time.time() - start > max_seconds:
-            raise RuntimeError(f"Timed out after {max_seconds}s. Last error: {last_error}")
-        
-        res = call_ollama(build_prompt(study_text, NUM_QUESTIONS), AISpecs)
-
-        if res.strip() == "":
-            continue
-
-        try: 
-
-            return verificationQuiz(res, study_text)
-
-        except  Exception as e:
-            last_error = e
-            
-            logger.warning("Attempt %d failed: %s", attempt, e)
-
-            debug_path = output_dir / "last_raw.txt"
-            debug_path.parent.mkdir(parents=True, exist_ok=True)
-            debug_path.write_text(res, encoding="utf-8")
-            time.sleep(0.5)
-
-    raise RuntimeError(f"Failed after {max_attempts} attempts. Last error: {last_error}")
-
-def initiate_QuizGen(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict):
+    AISpecs = engine.ai_specs
+    quizSpecs = engine.quiz_specs
 
     logger.info("Starting quiz generation (model=%s, num_questions=%d)", AISpecs["model"], quizSpecs["numQues"])
 
@@ -433,12 +399,15 @@ def initiate_QuizGen(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs
     logger.info("Study material loaded (%d chars)", len(study_text))
 
     logger.info("Calling Ollama at %s (model=%s)", OLLAMA_URL, AISpecs["model"])
-    parsed = generate_until_valid(study_text, output_dir, quizSpecs, AISpecs)
+    parsed, attempt = engine.generate(study_text)
     logger.info("Ollama returned (%d chars)", len(json.dumps(parsed)))
 
     return parsed
 
-def initiate_QuizGen_batch(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict, batchSize: int = 20) -> dict:
+def initiate_QuizGen_batch(study_text: str, engine: QuizEngine, batchSize: int = 20) -> dict:
+
+    AISpecs = engine.ai_specs
+    quizSpecs = engine.quiz_specs
 
     logger.info("Batch mode: generating %d questions in chunks of %d", batchSize, quizSpecs.get("numQues", 5))
 
@@ -451,7 +420,7 @@ def initiate_QuizGen_batch(study_text: str, output_dir: Path, quizSpecs: dict, A
         logger.info("Need %d more questions...", remaining)
 
        
-        batch = generate_until_valid(study_text, output_dir, quizSpecs, AISpecs)
+        batch, _ = engine.generate(study_text)
         logger.info("Batch returned %d questions", len(batch.get("questions", [])))
 
         for q in batch.get("questions", []):

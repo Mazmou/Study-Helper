@@ -1,15 +1,16 @@
 from pathlib import Path
 import logging
+
+from study_helper.engine import QuizEngine
 from .logging_config import setup_logging 
-from .step1  import AnswerValidationError, EvidenceValidationError, OptionValidationError, QuizValidationError, SchemaValidationError, OLLAMA_URL, call_ollama, build_prompt, generate_until_valid, verificationQuiz
-import json
+from .step1  import AnswerValidationError, EvidenceValidationError, OptionValidationError, SchemaValidationError, verificationQuiz
 
 def updateIndDix(indDict: dict):
     
     total = sum(indDict.values())
     
     if total == 0:
-        return 0
+        return indDict
     
     for key, val in indDict.items():
         indDict[key] = round(val/total*100, 2)
@@ -35,14 +36,14 @@ def evaluation(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict
     
     NUM_QUESTIONS = quizSpecs["numQues"] if "numQues" in quizSpecs else (logger.info("numQues not found. Defaulting to 5.") or 5)
     
-
-    
     Failures = {
         "Schema" : 0,
         "Evidence" : 0,
         "Answer" : 0,
-        "Options" :0
+        "Options" : 0,
+        "EngineFailure": 0
         }
+    
     correctInxDis = {
         0 : 0,
         1 : 0,
@@ -50,55 +51,81 @@ def evaluation(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict
         3 : 0
     }
     
+    winCount = 0
+    attempts = 0
+    fistTry = 0
+
     for i in range(numOfRuns):
+        attempt = 0
 
-        didNotPass = True         
-        attempts = 0
-        winRate = 0
-        attemptsAvg = 0
+        try:
+            logger.info(f"{i} run")
+            logger.info("==========================================================================")
 
-        while didNotPass and attempts <= 30:
-            attempts += 1
+            engine = QuizEngine(quizSpecs, AISpecs,verificationQuiz)
+            parsed, attempt = engine.generate(study_text)
 
-            try:
+            winCount += 1
+            attempts += attempt
 
-                logger.info(f"{i} run")
-                logger.info("==========================================================================")
-                parsed = generate_until_valid(study_text, output_dir, quizSpecs, AISpecs)
-                winCount += 1
-                correctInxDis = calculateInd(parsed, correctInxDis)
-
-            except EvidenceValidationError as e:
-                logger.warning("Evidence issue: %s", e)
-                Failures["Evidence"]  += 1
-
-            except SchemaValidationError as e:
-                logger.warning("Schema issue: %s", e)
-                Failures["Schema"]  += 1
-
-            except AnswerValidationError as e:
-                logger.warning("Answer issue: %s", e)
-                Failures["Answer"]  += 1
-
-            except OptionValidationError as e:
-                logger.warning("Options issue: %s", e)
-                Failures["Options"]  += 1
-
-            except QuizValidationError as e:
-                logger.warning("Other validation issue: %s", e)
+            fistTry += 1 if attempt == 1 else 0
+            correctInxDis = calculateInd(parsed, correctInxDis)
         
-        winRate += 1 / attempts
+        except SchemaValidationError:
+            Failures["Schema"] += 1
 
-        attemptsAvg +=  attempts / numOfRuns
+        except EvidenceValidationError:
+            Failures["Evidence"] += 1
+
+        except AnswerValidationError:
+            Failures["Answer"] += 1
+
+        except OptionValidationError:
+            Failures["Options"] += 1
+
+        except RuntimeError:
+            Failures["EngineFailure"] += 1
+    
     correctInxDis = updateIndDix(correctInxDis)
-                
+
+    attemptsAvg = attempts / winCount if winCount > 0 else 0
+
     evaluationDict = {
 
         "Runs" : numOfRuns,
-        "Success rate" : winRate,
+        "Success rate" : round(winCount / numOfRuns * 100, 2),
+        "first-Attempt%" : round(fistTry  / numOfRuns * 100, 2),
         "Avg attempts" : attemptsAvg,
         "Failures" : Failures,
         "Correct index distribution" : correctInxDis
     }
 
     return evaluationDict
+
+def displayEval(evalDict: dict)-> None:
+
+    Runs = evalDict.get("Runs", 0)
+    SuccessRate = evalDict.get("Success rate", 0)
+    AvgAttempts = evalDict.get("Avg attempts", 0) 
+    failures = evalDict.get("Failures", {})
+    CorrectIndx = evalDict.get("Correct index distribution", {})
+
+    banner = f'''
+            Runs completed : {Runs}
+            Success Rate : {SuccessRate}
+            Average attempts : {AvgAttempts}
+            failures : 
+                Schema : {failures["Schema"]}
+                Evidence : {failures["Evidence"]}
+                Answer : {failures["Answer"]}
+                Options : {failures["Options"]}
+                Engine : {failures["EngineFailure"]}
+            Correct index distribution :
+                1 : {CorrectIndx[0]}
+                2 : {CorrectIndx[1]}
+                3 : {CorrectIndx[2]}
+                4 : {CorrectIndx[3]}
+            '''
+    print(banner)
+    
+    
