@@ -40,6 +40,7 @@ def main():
     generate_quiz = not args.no_quiz
     write_files = not args.no_write
     AImodel = args.model
+    text = input_p.read_text(encoding="utf-8-sig")
     numQues = args.num_questions
     temp = args.temperature
     maxAttempts = args.max_attempts
@@ -51,25 +52,39 @@ def main():
         "temp": temp
     }
     quizSpecs = {
+        "study_text": text,
         "numQues": numQues,
         "maxAttempts": maxAttempts,
         "maxSec": maxSec
     }
 
-
-    text = input_p.read_text(encoding="utf-8-sig")
-
-    if evalMode:
-        displayEval(evaluation(text, out_dir, quizSpecs, AIspecs, 5))
-        return
-    
     engine = QuizEngine(quiz_specs=quizSpecs,
                         ai_specs=AIspecs,
                         validator=verificationQuiz)
+
+    if evalMode:
+        eval_result = evaluation(engine, numOfRuns=5)
+        displayEval(eval_result)
+        return
     
     try:
-        quiz, attemptNum = engine.generate(text)
-        print(f"Quiz generated after {attemptNum}th attempt")
+        batch_info = None
+
+        if numQues < 10:
+            quiz = engine.generateNormal()
+            print(f"Quiz generated after {engine.currAttempt}th attempt")
+        else:
+            batch_info = engine.generateBatch()
+            quiz = {"questions": batch_info["questions"]}
+
+            if not batch_info["complete"]:
+                print(
+                    f"Warning: requested {batch_info['requested']} questions, "
+                    f"but only generated {batch_info['generated']} "
+                    f"after {batch_info['batch_attempts']} batch attempts."
+                )
+            
+
     except Exception as e:
         print(f"Generation failed: {e}")
         sys.exit(1)
@@ -81,6 +96,7 @@ def main():
             json.dumps(quiz, indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
+
 
         render_quiz_markdown(quiz, out_dir / "questions.md")
     

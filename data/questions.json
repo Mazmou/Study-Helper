@@ -1,14 +1,14 @@
 {
   "questions": [
     {
-      "question": "What mechanism does TCP use to establish a connection before data transmission?",
+      "question": "What mechanism does TCP use to establish a connection before transmitting data?",
       "options": [
-        "Synchronous request/response",
+        "Single acknowledgment",
+        "Four-way exchange",
         "Three-way handshake",
-        "Four-way handshake",
-        "Two-phase commit"
+        "Two-step verification"
       ],
-      "correct_index": 1,
+      "correct_index": 2,
       "correct_answer": "Three-way handshake",
       "evidence": "The Internet Protocol (IP) is a network-layer protocol responsible for addressing and routing packets across network boundaries. TCP establishes a connection using a three-way handshake mechanism..."
     },
@@ -16,49 +16,109 @@
       "question": "Which layer of the TCP/IP model handles logical addressing and routing?",
       "options": [
         "Internet layer",
-        "Application layer",
+        "Transport layer",
         "Network Access layer",
-        "Transport layer"
+        "Application layer"
       ],
       "correct_index": 0,
       "correct_answer": "Internet layer",
       "evidence": "The TCP/IP model divides networking responsibilities into four layers: the Application layer provides protocols for specific data communications services..."
     },
     {
-      "question": "What is HTTP used for?",
+      "question": "What is HTTP used for in network communication?",
       "options": [
-        "Routing packets across networks",
-        "Securing network communication",
+        "Transferring hypermedia documents",
         "Managing flow control",
-        "Transferring hypermedia documents"
+        "Establishing a connection between client and server",
+        "Providing end-to-end communication service"
       ],
-      "correct_index": 3,
+      "correct_index": 0,
       "correct_answer": "Transferring hypermedia documents",
-      "evidence": "Hypertext Transfer Protocol (HTTP) is an application-layer protocol used for transferring hypermedia documents such as HTML."
+      "evidence": "Hypertext Transfer Protocol (HTTP) is an application-layer protocol used for transferring hypermedia documents such as HTML..."
     },
     {
       "question": "What does the sliding window mechanism in TCP manage?",
       "options": [
-        "Packet fragmentation",
-        "Data encryption",
-        "Flow control",
-        "Error detection"
+        "Connection establishment",
+        "Data ordering",
+        "Error detection",
+        "Flow control"
       ],
-      "correct_index": 2,
+      "correct_index": 3,
       "correct_answer": "Flow control",
       "evidence": "TCP uses a sliding window mechanism to manage flow control. The receiver advertises a window size that determines how much data the sender may transmit before receiving an acknowledgment."
     },
     {
-      "question": "What does DNS translate?",
+      "question": "What does UDP provide compared to TCP?",
       "options": [
-        "Domain names into IP addresses",
-        "TCP headers into UDP packets",
-        "UDP datagrams into TCP segments",
-        "IP addresses into domain names"
+        "Connection establishment prior to transmission",
+        "Reliability, ordering and duplicate protection",
+        "Minimal services with no reliability guarantee",
+        "Higher latency for data transfer"
+      ],
+      "correct_index": 2,
+      "correct_answer": "Minimal services with no reliability guarantee",
+      "evidence": "UDP is a lightweight transport protocol that provides minimal services compared to TCP. UDP does not establish a connection before transmitting data and does not provide reliability..."
+    },
+    {
+      "question": "What mechanism does TCP use to establish a connection before data transmission begins?",
+      "options": [
+        "Four-way handshake",
+        "Two-phase commit",
+        "Synchronous request",
+        "Three-way handshake"
+      ],
+      "correct_index": 3,
+      "correct_answer": "Three-way handshake",
+      "evidence": "The Internet Protocol (IP) is a network-layer protocol responsible for addressing and routing packets across network boundaries. TCP establishes a connection using a three-way handshake mechanism..."
+    },
+    {
+      "question": "What is HTTP?",
+      "options": [
+        "A connection-oriented transport protocol",
+        "A network access control mechanism.",
+        "An application-layer protocol used for transferring hypermedia documents such as HTML.",
+        "A congestion avoidance algorithm"
+      ],
+      "correct_index": 2,
+      "correct_answer": "An application-layer protocol used for transferring hypermedia documents such as HTML.",
+      "evidence": "Hypertext Transfer Protocol (HTTP) is an application-layer protocol used for transferring hypermedia documents..."
+    },
+    {
+      "question": "What does the checksum field in TCP header verify?",
+      "options": [
+        "Only the integrity of the payload data",
+        "Neither, it's used for encryption",
+        "Only the integrity of the header data",
+        "The integrity of both header and payload data"
+      ],
+      "correct_index": 3,
+      "correct_answer": "The integrity of both header and payload data",
+      "evidence": "TCP includes a checksum field in its header to verify the integrity of both header and payload data."
+    },
+    {
+      "question": "What is flow control?",
+      "options": [
+        "The process by which packets are routed across networks.",
+        "A protocol for establishing a connection between client and server.",
+        "A mechanism that ensures no sender overwhelms receiver with too much data at once",
+        "An encryption method used to protect the confidentiality of transmitted data."
+      ],
+      "correct_index": 2,
+      "correct_answer": "A mechanism that ensures no sender overwhelms receiver with too much data at once",
+      "evidence": "Flow control ensures that a sender does not overwhelm a receiver with too much data at once. TCP uses a sliding window mechanism to manage flow control."
+    },
+    {
+      "question": "What mechanism does TCP use to establish a connection?",
+      "options": [
+        "Three-way handshake",
+        "Single acknowledgment",
+        "Four-way exchange",
+        "Two-phase negotiation"
       ],
       "correct_index": 0,
-      "correct_answer": "Domain names into IP addresses",
-      "evidence": "The Domain Name System (DNS) translates human-readable domain names into IP addresses. When a user enters a domain name in a browser..."
+      "correct_answer": "Three-way handshake",
+      "evidence": "The Transmission Control Protocol (TCP) is a connection-oriented transport protocol designed to provide reliable, ordered, and error-checked delivery of data between applications running on hosts communicating via an IP network. TCP establishes a connection using a three-way handshake mechanism, which consists of SYN, SYN-ACK, and ACK segments exchanged between client and server before data is."
     }
   ]
 }

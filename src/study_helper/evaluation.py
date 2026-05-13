@@ -24,53 +24,47 @@ def calculateInd(parsed: dict, indDict: dict):
 
     return indDict
         
-def evaluation(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict, numOfRuns: int):
-    
-    setup_logging("INFO")
+def evaluation(engine: QuizEngine, numOfRuns: int):
+
     logger = logging.getLogger(__name__)
 
-    logger.info("Evaluation started with text of %d char. ", len(study_text))
-    logger.info("Evaluation will be run %d times. ", numOfRuns)
-    logger.info("Starting quiz generation (model=%s, num_questions=%d)", AISpecs["model"], quizSpecs.get("numQues", 5))
-
-    
-    NUM_QUESTIONS = quizSpecs["numQues"] if "numQues" in quizSpecs else (logger.info("numQues not found. Defaulting to 5.") or 5)
-    
     Failures = {
-        "Schema" : 0,
-        "Evidence" : 0,
-        "Answer" : 0,
-        "Options" : 0,
+        "Schema": 0,
+        "Evidence": 0,
+        "Answer": 0,
+        "Options": 0,
         "EngineFailure": 0
-        }
-    
-    correctInxDis = {
-        0 : 0,
-        1 : 0,
-        2 : 0,
-        3 : 0
     }
-    
+
+    correctInxDis = {0: 0, 1: 0, 2: 0, 3: 0}
+
     winCount = 0
     attempts = 0
     fistTry = 0
 
     for i in range(numOfRuns):
-        attempt = 0
+
+        logger.info(f"Run {i}")
+        logger.info("=================================================")
+
+        engine.currAttempt = 0
+        engine.total_failures = {
+            "Validation": 0,
+            "Unexpected": 0,
+            "Empty": 0,
+            "Evidence": 0
+        }
 
         try:
-            logger.info(f"{i} run")
-            logger.info("==========================================================================")
-
-            engine = QuizEngine(quizSpecs, AISpecs,verificationQuiz)
-            parsed, attempt = engine.generate(study_text)
+            parsed = engine.generate()
+            attempt = engine.currAttempt
 
             winCount += 1
             attempts += attempt
-
             fistTry += 1 if attempt == 1 else 0
+
             correctInxDis = calculateInd(parsed, correctInxDis)
-        
+
         except SchemaValidationError:
             Failures["Schema"] += 1
 
@@ -85,19 +79,18 @@ def evaluation(study_text: str, output_dir: Path, quizSpecs: dict, AISpecs: dict
 
         except RuntimeError:
             Failures["EngineFailure"] += 1
-    
+
     correctInxDis = updateIndDix(correctInxDis)
 
     attemptsAvg = attempts / winCount if winCount > 0 else 0
 
     evaluationDict = {
-
-        "Runs" : numOfRuns,
-        "Success rate" : round(winCount / numOfRuns * 100, 2),
-        "first-Attempt%" : round(fistTry  / numOfRuns * 100, 2),
-        "Avg attempts" : attemptsAvg,
-        "Failures" : Failures,
-        "Correct index distribution" : correctInxDis
+        "Runs": numOfRuns,
+        "Success rate": round(winCount / numOfRuns * 100, 2),
+        "first-Attempt%": round(fistTry / numOfRuns * 100, 2),
+        "Avg attempts": attemptsAvg,
+        "Failures": Failures,
+        "Correct index distribution": correctInxDis
     }
 
     return evaluationDict

@@ -21,6 +21,8 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 #MODEL = "phi3:mini"
 #NUM_QUESTIONS = 5
 
+STOPWORDS = {"what", "does", "the", "is", "of", "in", "for", "a", "an"}
+
 QUIZ_SCHEMA = {
     "type": "object",
     "required": ["questions"],
@@ -214,7 +216,7 @@ def normalize_text(s:str) -> str:
 
 def validate_evidence(parsed, study_text):
 
-    overlap_threshold=0.60
+    overlap_threshold=0.50
     study_norm = normalize_text(study_text)
     for i, question in enumerate(parsed["questions"]):
         evidence_raw = question.get("evidence", "")
@@ -224,8 +226,8 @@ def validate_evidence(parsed, study_text):
             raise EvidenceValidationError(f"Missing 'evidence' key in question {i}")
 
         word_count = len(evidence_raw.split())
-        if word_count < 10 or word_count > 60:
-            raise EvidenceValidationError(f"Evidence {i} must be 10 to 60 words (got {word_count})")
+        if word_count < 5 or word_count > 60:
+            raise EvidenceValidationError(f"Evidence {i} must be 5 to 60 words (got {word_count})")
         
         ev_norm = normalize_text(evidence_raw)
         ans_norm = normalize_text(ans_raw)
@@ -255,6 +257,7 @@ def validate_evidence(parsed, study_text):
             )
                 
 def validate_answer(parsed: dict) -> None:
+
     for i, q in enumerate(parsed["questions"]):
 
         options_raw = q.get("options", [])
@@ -386,6 +389,41 @@ def verificationQuiz(res: str, study_text: str):
 
     return parsed
 
+def similiraty_check(collected: list, new_question: dict):
+
+    new_text = new_question.get("question", "")
+    new_tokens_text = [t for t in new_text.split() if len(t) >= 3 and t not in STOPWORDS]
+
+    
+    for q in collected:
+
+        if normalize_text(new_question["correct_answer"]) == normalize_text(q["correct_answer"]):
+            return True
+        
+        if normalize_text(new_text) == normalize_text(q["question"]):
+            return True
+        
+        ev1 = normalize_text(new_question["evidence"])
+        ev2 = normalize_text(q["evidence"])
+
+        if ev1 in ev2 or ev2 in ev1:
+            return True
+        
+        old_text = q.get("question", "")
+        old_tokens = [t for t in old_text.split() if len(t) >= 3]
+
+        intersection = set(new_tokens_text) & set(old_tokens)
+        union = set(new_tokens_text) | set(old_tokens)
+
+        if not union:
+            continue
+
+        similarity = len(intersection) / len(union)
+
+        if similarity > 0.65:
+            return True  
+
+    return False  
 
 def initiate_QuizGen(study_text: str, engine: QuizEngine):
 
@@ -420,7 +458,7 @@ def initiate_QuizGen_batch(study_text: str, engine: QuizEngine, batchSize: int =
         logger.info("Need %d more questions...", remaining)
 
        
-        batch, _ = engine.generate(study_text)
+        batch = engine.generate(study_text)
         logger.info("Batch returned %d questions", len(batch.get("questions", [])))
 
         for q in batch.get("questions", []):
